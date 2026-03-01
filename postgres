@@ -83,6 +83,13 @@ SELECT
   p.nombre,
   p.apellido,
   p.email,
+
+
+Lo más importante para el examen:
+
+REFERENCES → es lo que crea la conexión entre tablas al crearlas
+JOIN ... ON → es lo que une las tablas al consultar
+Orden importante → siempre crear e insertar especialidades antes que personas
   p.edad,
   e.nombre AS especialidad  -- trae el nombre de la tabla especialidades
 FROM personas p
