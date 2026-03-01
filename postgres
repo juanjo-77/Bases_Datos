@@ -1,34 +1,90 @@
--- Tabla especialidades
+-- =============================================
+-- 1. CREAR TABLA ESPECIALIDADES
+-- Esta tabla guarda los datos que SE REPETÍAN en el Excel
+-- Siempre se crea PRIMERO porque personas depende de ella
+-- =============================================
 CREATE TABLE especialidades (
-  id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,  -- SERIAL = autoincrementa (1,2,3...)
   nombre VARCHAR(100) NOT NULL
 );
 
--- Tabla personas con FK a especialidades
+
+-- =============================================
+-- 2. CREAR TABLA PERSONAS
+-- Esta tabla tiene una FK que la CONECTA con especialidades
+-- =============================================
 CREATE TABLE personas (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   apellido VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   edad INT NOT NULL,
+
+  -- ↓ ESTA ES LA PARTE QUE CONECTA LAS DOS TABLAS ↓
+  -- especialidad_id guarda el id de la tabla especialidades
+  -- REFERENCES le dice a postgres que ese número debe existir en especialidades
   especialidad_id INT REFERENCES especialidades(id)
 );
 
--- Insertar especialidades primero
+
+-- =============================================
+-- 3. INSERTAR DATOS EN ESPECIALIDADES
+-- Se insertan PRIMERO antes que personas
+-- porque personas necesita los ids de esta tabla
+-- =============================================
 INSERT INTO especialidades (nombre) VALUES
-  ('cardiologia'),
-  ('electroterapia'),
-  ('analisis'),
-  ('roturacion');
+  ('cardiologia'),      -- queda con id 1
+  ('electroterapia'),   -- queda con id 2
+  ('analisis'),         -- queda con id 3
+  ('roturacion');       -- queda con id 4
 
--- Insertar personas con su especialidad_id
+
+-- =============================================
+-- 4. INSERTAR PERSONAS
+-- especialidad_id debe coincidir con un id de especialidades
+-- juan tiene especialidad_id=1 → cardiologia
+-- pepe tiene especialidad_id=2 → electroterapia
+-- =============================================
 INSERT INTO personas (nombre, apellido, email, edad, especialidad_id) VALUES
-  ('juan', 'peña', 'juan@gmail.com', 18, 1),
-  ('pepe', 'garcia', 'pepe@gmail.com', 19, 2),
+  ('juan',    'peña',   'juan@gmail.com',    18, 1),
+  ('pepe',    'garcia', 'pepe@gmail.com',    19, 2),
   ('alberto', 'alzate', 'alberto@gmail.com', 20, 3),
-  ('rodrigo', 'muñoz', 'rodrigo@gmail.com', 21, 4);
+  ('rodrigo', 'muñoz',  'rodrigo@gmail.com', 21, 4);
 
--- Verificar que quedó bien
-SELECT p.*, e.nombre AS especialidad
+
+-- =============================================
+-- 5. PROCEDIMIENTO ALMACENADO PARA INSERTAR
+-- En vez de hacer INSERT directo, usamos CALL
+-- Así lo llamas desde Express con pool.query('CALL insertar_persona($1,$2,$3,$4,$5)', [...])
+-- =============================================
+CREATE OR REPLACE PROCEDURE insertar_persona(
+  p_nombre VARCHAR,
+  p_apellido VARCHAR,
+  p_email VARCHAR,
+  p_edad INT,
+  p_especialidad_id INT
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+  INSERT INTO personas (nombre, apellido, email, edad, especialidad_id)
+  VALUES (p_nombre, p_apellido, p_email, p_edad, p_especialidad_id);
+END;
+$$;
+
+
+-- =============================================
+-- 6. JOIN — UNE LAS DOS TABLAS EN UNA CONSULTA
+-- Sin JOIN verías especialidad_id=1 en vez de "cardiologia"
+-- Con JOIN ves el nombre real de la especialidad
+-- ↓ ESTA ES LA PARTE QUE "COMPLEMENTA" UNA TABLA CON OTRA ↓
+-- =============================================
+SELECT 
+  p.id,
+  p.nombre,
+  p.apellido,
+  p.email,
+  p.edad,
+  e.nombre AS especialidad  -- trae el nombre de la tabla especialidades
 FROM personas p
 JOIN especialidades e ON p.especialidad_id = e.id;
+-- ON p.especialidad_id = e.id → aquí es donde se unen las dos tablas
