@@ -1,90 +1,130 @@
 -- =============================================
--- 1. CREAR TABLA ESPECIALIDADES
--- Esta tabla guarda los datos que SE REPETÍAN en el Excel
--- Siempre se crea PRIMERO porque personas depende de ella
+-- 1. TABLA ESPECIALIDADES (se crea primero)
+-- porque doctores depende de ella
 -- =============================================
 CREATE TABLE especialidades (
-  id SERIAL PRIMARY KEY,  -- SERIAL = autoincrementa (1,2,3...)
+  id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL
 );
 
-
 -- =============================================
--- 2. CREAR TABLA PERSONAS
--- Esta tabla tiene una FK que la CONECTA con especialidades
+-- 2. TABLA DOCTORES
+-- especialidad_id conecta con especialidades
 -- =============================================
-CREATE TABLE personas (
+CREATE TABLE doctores (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   apellido VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   edad INT NOT NULL,
-
-  -- ↓ ESTA ES LA PARTE QUE CONECTA LAS DOS TABLAS ↓
-  -- especialidad_id guarda el id de la tabla especialidades
-  -- REFERENCES le dice a postgres que ese número debe existir en especialidades
+  -- ↓ ESTA LINEA CONECTA DOCTORES CON ESPECIALIDADES ↓
   especialidad_id INT REFERENCES especialidades(id)
 );
 
+-- =============================================
+-- 3. TABLA ACUDIENTES
+-- =============================================
+CREATE TABLE acudientes (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  apellido VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  edad INT NOT NULL
+);
 
 -- =============================================
--- 3. INSERTAR DATOS EN ESPECIALIDADES
--- Se insertan PRIMERO antes que personas
--- porque personas necesita los ids de esta tabla
+-- 4. TABLA USUARIOS
+-- =============================================
+CREATE TABLE usuarios (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  apellido VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  edad INT NOT NULL
+);
+
+-- =============================================
+-- 5. INSERTAR ESPECIALIDADES PRIMERO
 -- =============================================
 INSERT INTO especialidades (nombre) VALUES
-  ('cardiologia'),      -- queda con id 1
-  ('electroterapia'),   -- queda con id 2
-  ('analisis'),         -- queda con id 3
-  ('roturacion');       -- queda con id 4
-
+  ('cardiologia'),
+  ('electroterapia'),
+  ('analisis'),
+  ('roturacion');
 
 -- =============================================
--- 4. INSERTAR PERSONAS
--- especialidad_id debe coincidir con un id de especialidades
--- juan tiene especialidad_id=1 → cardiologia
--- pepe tiene especialidad_id=2 → electroterapia
+-- 6. INSERTAR DOCTORES
 -- =============================================
-INSERT INTO personas (nombre, apellido, email, edad, especialidad_id) VALUES
+INSERT INTO doctores (nombre, apellido, email, edad, especialidad_id) VALUES
   ('juan',    'peña',   'juan@gmail.com',    18, 1),
   ('pepe',    'garcia', 'pepe@gmail.com',    19, 2),
   ('alberto', 'alzate', 'alberto@gmail.com', 20, 3),
   ('rodrigo', 'muñoz',  'rodrigo@gmail.com', 21, 4);
 
+-- =============================================
+-- 7. INSERTAR ACUDIENTES
+-- =============================================
+INSERT INTO acudientes (nombre, apellido, email, edad) VALUES
+  ('francis', 'popo',    'francis@gmail.com', 33),
+  ('sergio',  'caquita', 'sergio@gmail.com',  34),
+  ('marta',   'andrade', 'marta@gmail.com',   35),
+  ('cara',    'chimba',  'cara@gmail.com',     38);
 
 -- =============================================
--- 5. PROCEDIMIENTO ALMACENADO PARA INSERTAR
--- En vez de hacer INSERT directo, usamos CALL
--- Así lo llamas desde Express con pool.query('CALL insertar_persona($1,$2,$3,$4,$5)', [...])
+-- 8. INSERTAR USUARIOS
 -- =============================================
-CREATE OR REPLACE PROCEDURE insertar_persona(
-  p_nombre VARCHAR,
-  p_apellido VARCHAR,
-  p_email VARCHAR,
-  p_edad INT,
-  p_especialidad_id INT
+INSERT INTO usuarios (nombre, apellido, email, edad) VALUES
+  ('parcero', 'popo',    'parcero@gmail.com', 21),
+  ('szsmi',   'caquita', 'szsmi@gmail.com',   22),
+  ('jajaja',  'andrade', 'jajaja@gmail.com',  23),
+  ('noooo',   'chimba',  'noooo@gmail.com',   24);
+
+-- =============================================
+-- 9. PROCEDIMIENTOS ALMACENADOS
+-- =============================================
+CREATE OR REPLACE PROCEDURE insertar_doctor(
+  p_nombre VARCHAR, p_apellido VARCHAR,
+  p_email VARCHAR, p_edad INT, p_especialidad_id INT
 )
 LANGUAGE plpgsql AS $$
 BEGIN
-  INSERT INTO personas (nombre, apellido, email, edad, especialidad_id)
+  INSERT INTO doctores (nombre, apellido, email, edad, especialidad_id)
   VALUES (p_nombre, p_apellido, p_email, p_edad, p_especialidad_id);
 END;
 $$;
 
+CREATE OR REPLACE PROCEDURE insertar_acudiente(
+  p_nombre VARCHAR, p_apellido VARCHAR,
+  p_email VARCHAR, p_edad INT
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+  INSERT INTO acudientes (nombre, apellido, email, edad)
+  VALUES (p_nombre, p_apellido, p_email, p_edad);
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE insertar_usuario(
+  p_nombre VARCHAR, p_apellido VARCHAR,
+  p_email VARCHAR, p_edad INT
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+  INSERT INTO usuarios (nombre, apellido, email, edad)
+  VALUES (p_nombre, p_apellido, p_email, p_edad);
+END;
+$$;
 
 -- =============================================
--- 6. JOIN — UNE LAS DOS TABLAS EN UNA CONSULTA
--- Sin JOIN verías especialidad_id=1 en vez de "cardiologia"
--- Con JOIN ves el nombre real de la especialidad
--- ↓ ESTA ES LA PARTE QUE "COMPLEMENTA" UNA TABLA CON OTRA ↓
+-- 10. VERIFICAR CON JOIN
 -- =============================================
 SELECT 
-  p.id,
-  p.nombre,
-  p.apellido,
-  p.email,
+  d.id, d.nombre, d.apellido, d.email, d.edad,
+  e.nombre AS especialidad
+FROM doctores d
+JOIN especialidades e ON d.especialidad_id = e.id;
 
-
+===============================================================================
 Lo más importante para el examen:
 
 REFERENCES → es lo que crea la conexión entre tablas al crearlas
