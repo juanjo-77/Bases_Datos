@@ -1,0 +1,34 @@
+-- Tabla especialidades
+CREATE TABLE especialidades (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL
+);
+
+-- Tabla personas con FK a especialidades
+CREATE TABLE personas (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  apellido VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  edad INT NOT NULL,
+  especialidad_id INT REFERENCES especialidades(id)
+);
+
+-- Insertar especialidades primero
+INSERT INTO especialidades (nombre) VALUES
+  ('cardiologia'),
+  ('electroterapia'),
+  ('analisis'),
+  ('roturacion');
+
+-- Insertar personas con su especialidad_id
+INSERT INTO personas (nombre, apellido, email, edad, especialidad_id) VALUES
+  ('juan', 'peña', 'juan@gmail.com', 18, 1),
+  ('pepe', 'garcia', 'pepe@gmail.com', 19, 2),
+  ('alberto', 'alzate', 'alberto@gmail.com', 20, 3),
+  ('rodrigo', 'muñoz', 'rodrigo@gmail.com', 21, 4);
+
+-- Verificar que quedó bien
+SELECT p.*, e.nombre AS especialidad
+FROM personas p
+JOIN especialidades e ON p.especialidad_id = e.id;
