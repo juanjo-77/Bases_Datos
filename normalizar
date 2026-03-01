@@ -1,0 +1,24 @@
+Perfecto! 🎉 Eso es exactamente la normalización que te van a pedir en el examen.
+
+Resumen de lo que hiciste para el examen
+1. Normalización — separaste el Excel en 2 tablas:
+
+especialidades → datos que se repetían
+personas → datos únicos con una FK (especialidad_id) apuntando a especialidades
+
+2. FK (Foreign Key) — es la columna que conecta las dos tablas:
+   
+----- especialidad_id INT REFERENCES especialidades(id)
+
+3. JOIN — para ver los datos unidos de las dos tablas:
+   
+---- SELECT p.*, e.nombre AS especialidad
+---- FROM personas p
+---- JOIN especialidades e ON p.especialidad_id = e.id;
+
+Lo que te pueden preguntar mañana
+
+¿Por qué normalizas? → Para no repetir datos y evitar inconsistencias
+¿Qué es una FK? → Una columna que referencia la PK de otra tabla
+¿Cómo cargas el Excel? → Lo conviertes a CSV y usas INSERT o Import Data en DBeaver
+¿Cómo ves los datos unidos? → Con JOIN
