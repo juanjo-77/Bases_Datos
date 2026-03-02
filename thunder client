@@ -1,0 +1,45 @@
+PRIMERO LE DA npm run dev
+
+===============================================================================================================
+ESTO TIENE QUE IR SOLO EN EL SCRIPTS para que funcione el npm run dev
+
+"scripts": {
+  "dev": "node --watch src/server.js"
+}
+
+===============================================================================================================
+
+despues de poner todos los codigos de algun usuario se mete a thnder client, le da 
+
+GET y pone esto
+http://localhost:3000/doctores (o lo que sea) despues que da ok pone 
+
+POST y pone json don esto ----
+
+{
+  "nombre": "carlos",
+  "apellido": "perez",
+  "email": "carlos@gmail.com",
+  "edad": 30,
+  "especialidad_id": 1
+}
+
+cuando de ok le la otra vez en GET para ver si dio melo
+
+=============================================================================================
+
+En Thunder Client:
+PUT — actualizar un usuario
+
+PUT http://localhost:3000/usuarios/1
+Body → JSON:
+json{
+  "nombre": "maria",
+  "apellido": "garcia",
+  "email": "maria2@gmail.com",
+  "edad": 30
+}
+El número al final de la URL (/1) es el id del usuario que quieres actualizar. ¿Qué responde?
+
+==============================================================================================
+
