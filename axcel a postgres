@@ -1,0 +1,60 @@
+excel 
+
+3️⃣ Crear la base de datos en PostgreSQL
+CREATE DATABASE mi_base;
+
+Entrar a la base:
+
+\c mi_base
+4️⃣ Crear las tablas en PostgreSQL
+
+Debes convertir las columnas de Excel a tipos de PostgreSQL:
+
+Excel	PostgreSQL
+Texto	VARCHAR o TEXT
+Número entero	INTEGER
+Decimal	NUMERIC
+Fecha	DATE
+Booleano	BOOLEAN
+
+Ejemplo:
+
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    correo VARCHAR(100),
+    edad INTEGER
+);
+5️⃣ Importar los datos
+🔹 Opción A (la más fácil): Guardar Excel como CSV
+
+En Excel:
+Archivo → Guardar como → CSV
+
+Luego en PostgreSQL:
+
+COPY clientes(nombre, correo, edad)
+FROM '/ruta/archivo.csv'
+DELIMITER ','
+CSV HEADER;
+
+⚠ Si usas pgAdmin o DBeaver, puedes usar:
+Click derecho tabla → Import → CSV
+
+6️⃣ Verificar que se subieron bien
+SELECT * FROM clientes;
+🧠 Resumen súper corto (para decirlo rápido)
+
+Revisar y limpiar el Excel.
+
+Identificar tipos de datos.
+
+Crear base de datos.
+
+Crear tablas en PostgreSQL.
+
+Exportar Excel a CSV.
+
+Importar con COPY o herramienta gráfica.
+
+Verificar con SELECT.
