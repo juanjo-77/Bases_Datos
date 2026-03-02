@@ -1,0 +1,93 @@
+Perfecto 👌 como ya tienes tu proyecto en PostgreSQL funcionando, ahora lo que quieres es usar Postman y exportar la respuesta a JSON (o ver cómo se documenta eso). 
+Te lo explico claro y práctico:
+
+🎯 1️⃣ Primero: entender algo importante
+
+👉 Postman ya trabaja en JSON por defecto.
+Si tu API responde bien, Postman te muestra el resultado en formato JSON automáticamente.
+
+Ejemplo de respuesta en Postman:
+
+[
+  {
+    "id": 1,
+    "nombre": "Juan",
+    "edad": 25
+  }
+]
+
+Eso ya es JSON.
+
+🧭 2️⃣ ¿Cómo ver la documentación en Postman?
+
+Postman tiene dos cosas importantes:
+_____________________________________________________________________________________________
+🔹 A) Documentación automática de una colección
+
+Ve a tu Collection (lado izquierdo).
+
+Click en los tres puntos ...
+
+Click en View documentation
+
+Ahí puedes:
+
+Ver endpoints
+
+Ver ejemplos de respuesta
+
+Exportar documentación
+___________________________________________________________________________________________
+🔹 B) Exportar colección (con tus endpoints)
+
+Si quieres exportar todo tu proyecto:
+
+Click derecho en la Collection
+
+Click en Export
+
+Escoge formato:
+
+Collection v2.1 (recomendado)
+
+Se descarga un archivo .json
+
+Ese archivo es la documentación/exportación de tu API.
+_______________________________________________________________________________
+📤 3️⃣ ¿Cómo exportar una respuesta específica a JSON?
+
+Si hiciste una petición (GET por ejemplo):
+
+Haz la petición
+
+Cuando salga la respuesta
+
+Click en los tres puntos ... al lado de "Save Response"
+
+Click en Save Response
+
+Guarda como .json
+_________________________________________________________________________________
+📘 4️⃣ Si quieres documentación estilo Swagger (más profesional)
+
+Postman permite generar documentación web:
+
+Ve a tu Collection
+
+Click en ...
+
+Click en Publish Docs
+
+Se genera un link web con tu documentación
+
+Eso es como tener un mini Swagger.
+
+🧠 Resumen rápido para examen
+
+Postman trabaja con JSON automáticamente.
+
+Puedes exportar una colección como archivo .json.
+
+Puedes guardar respuestas como .json.
+
+Puedes publicar documentación desde la colección.
