@@ -1,0 +1,21 @@
+1. Abre el .env y llena tus datos:
+DB_PASSWORD=tu_contraseña_de_postgres
+MONGO_URI=pega_aqui_tu_uri_de_atlas
+
+2. Instala dependencias:
+bashnpm install
+
+3. Corre el servidor:
+bashnpm run dev
+```
+
+Deberías ver:
+```
+✅ PostgreSQL conectado
+✅ MongoDB conectado
+🚀 Servidor corriendo en http://localhost:3000
+
+Lo nuevo que tiene este proyecto con Mongo es el patrón papelera:
+
+DELETE /usuarios/1 → borra de Postgres y guarda en MongoDB
+POST /usuarios/recovery con { "email": "..." } → recupera de MongoDB y restaura en Postgres
