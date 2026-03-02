@@ -18,7 +18,202 @@ personas → datos únicos con una FK (especialidad_id) apuntando a especialidad
 
 Lo que te pueden preguntar mañana
 
+
 ¿Por qué normalizas? → Para no repetir datos y evitar inconsistencias
 ¿Qué es una FK? → Una columna que referencia la PK de otra tabla
 ¿Cómo cargas el Excel? → Lo conviertes a CSV y usas INSERT o Import Data en DBeaver
 ¿Cómo ves los datos unidos? → Con JOIN
+
+
+================================================================================================
+================================================================================================
+================================================================================================
+
+GUIA DEFINITIVA:
+
+
+Perfecto 👌 esto ya es nivel más pro (como para parcial de bases de datos).
+
+Te explico cómo normalizar ese Excel paso a paso con las tablas:
+
+Doctores con especialidades
+
+Acudientes
+
+Pacientes
+
+Familia del paciente
+
+🎯 OBJETIVO DE NORMALIZAR
+
+Evitar:
+
+Datos repetidos
+
+Inconsistencias
+
+Problemas al actualizar
+
+Trabajamos hasta 3FN (Tercera Forma Normal).
+
+🧠 PASO 1: Analizar el Excel
+
+Imagina que el Excel trae algo así (mal diseño):
+
+paciente	edad	doctor	especialidad	acudiente	telefono_acudiente	familiar	parentesco
+
+❌ Problemas:
+
+Se repite el doctor muchas veces.
+
+Se repite la especialidad.
+
+Se repite el acudiente.
+
+Si un paciente tiene varios familiares, se duplican filas.
+
+Eso NO está normalizado.
+
+🧱 PASO 2: Separar entidades (1FN)
+
+Cada tabla debe representar una sola cosa.
+
+📌 Tablas principales
+1️⃣ doctores
+
+id_doctor (PK)
+
+nombre
+
+id_especialidad (FK)
+
+2️⃣ especialidades
+
+id_especialidad (PK)
+
+nombre_especialidad
+
+👉 Porque una especialidad puede tener muchos doctores
+(Relación 1 a muchos)
+
+3️⃣ pacientes
+
+id_paciente (PK)
+
+nombre
+
+edad
+
+id_doctor (FK)
+
+id_acudiente (FK)
+
+4️⃣ acudientes
+
+id_acudiente (PK)
+
+nombre
+
+telefono
+
+👉 Un acudiente puede estar relacionado con varios pacientes.
+
+5️⃣ familiares
+
+id_familiar (PK)
+
+nombre
+
+parentesco
+
+id_paciente (FK)
+
+👉 Un paciente puede tener varios familiares
+(Relación 1 a muchos)
+
+🧩 PASO 3: Revisar dependencias (2FN y 3FN)
+✔ 2FN
+
+No debe haber columnas que dependan solo de parte de la clave.
+
+Como usamos claves simples (id), estamos bien.
+
+✔ 3FN
+
+No debe haber dependencias transitivas.
+
+Ejemplo malo:
+
+doctor → especialidad_nombre
+
+Eso rompe 3FN.
+
+Por eso creamos la tabla:
+
+especialidades
+
+Y solo guardamos:
+
+id_especialidad
+🗂 Resultado final normalizado (3FN)
+Estructura correcta:
+especialidades
+
+id_especialidad (PK)
+
+nombre
+
+doctores
+
+id_doctor (PK)
+
+nombre
+
+id_especialidad (FK)
+
+acudientes
+
+id_acudiente (PK)
+
+nombre
+
+telefono
+
+pacientes
+
+id_paciente (PK)
+
+nombre
+
+edad
+
+id_doctor (FK)
+
+id_acudiente (FK)
+
+familiares
+
+id_familiar (PK)
+
+nombre
+
+parentesco
+
+id_paciente (FK)
+
+🔗 Relaciones
+
+Especialidad → Doctores (1:N)
+
+Doctor → Pacientes (1:N)
+
+Acudiente → Pacientes (1:N)
+
+Paciente → Familiares (1:N)
+
+🧠 Cómo explicarlo fácil en un examen
+
+"Primero identifico las entidades principales. 
+Luego separo la información repetida en tablas independientes. 
+Después creo claves primarias y foráneas para relacionarlas. 
+Finalmente verifico que no existan dependencias transitivas para cumplir tercera forma normal."
